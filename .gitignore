@@ -1,0 +1,49 @@
+# ===== Secrets =====
+.env
+.env.*
+!.env.example
+
+# ===== Node.js =====
+node_modules/
+
+# ===== Next.js =====
+.next/
+/out/
+/build
+
+# ===== Hardhat =====
+/blockchain/artifacts/
+/blockchain/cache/
+/blockchain/types/
+/blockchain/coverage/
+/.gas-snapshot
+/snapshots
+
+# ===== Prisma =====
+*.db
+*.db-journal
+/web-app/app/generated/
+web-app/prisma/generated/
+
+# ===== TypeScript =====
+*.tsbuildinfo
+next-env.d.ts
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+
+# ===== Editors =====
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ===== Logs =====
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ===== University documents (not part of the codebase) =====
+*.docx
+*.pdf
