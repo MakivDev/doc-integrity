@@ -34,13 +34,12 @@ export default function Home() {
       <section className="page-hero">
         <div className="glow-bg"></div>
         <h1>{t.landing.hero}</h1>
-        <p className="mb-8">{t.landing.heroSub}</p>
-        
-        <div className="flex flex-wrap justify-center gap-4">
-          <Link href="/register" className="btn btn-primary px-8 py-4 text-lg" style={{ minWidth: '320px', justifyContent: 'center' }}>
+        <p className="mb-8">{t.landing.heroSub}</p>        
+        <div className="flex flex-wrap justify-center gap-4 px-4">
+          <Link href="/register" className="btn btn-primary px-8 py-4 text-lg w-full max-w-[320px] justify-center">
             {t.landing.cta_register}
           </Link>
-          <Link href="/verify" className="btn px-8 py-4 text-lg" style={{ border: '1px solid var(--border-color)', minWidth: '320px', justifyContent: 'center' }}>
+          <Link href="/verify" className="btn px-8 py-4 text-lg w-full max-w-[320px] justify-center" style={{ border: '1px solid var(--border-color)' }}>
             {t.landing.cta_verify}
           </Link>
         </div>

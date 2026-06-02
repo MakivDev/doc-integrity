@@ -27,6 +27,7 @@ export default function VerifyPage() {
   const [result, setResult] = useState<VerifyResult | null>(null);
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [filename, setFilename] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const handleCopy = (text: string, field: string) => {
     navigator.clipboard.writeText(text);
@@ -52,9 +53,9 @@ export default function VerifyPage() {
   const handleFileChange = async (selectedFile: File) => {
     const ext = selectedFile.name.split('.').pop()?.toLowerCase() || '';
     if (!ALLOWED_EXTENSIONS.includes(ext)) {
+      setErrorMessage(locale === "uk" ? "Помилка: дозволені лише документи (PDF, DOC, TXT тощо)." : "Error: only document files are allowed (PDF, DOC, TXT, etc.).");
       setStatus("error");
-      alert(locale === "uk" ? "Помилка: дозволені лише документи (PDF, DOC, TXT тощо)." : "Error: only document files are allowed (PDF, DOC, TXT, etc.).");
-      setStatus("idle");
+      setFile(null);
       return;
     }
 
@@ -129,37 +130,37 @@ export default function VerifyPage() {
   };
 
   return (
-    <div className="flex flex-col justify-center w-full items-center relative text-center" style={{ minHeight: '80vh', paddingTop: '8rem', paddingBottom: '6rem' }}>
+    <div className="flex flex-col justify-center w-full items-center relative text-center page-wrapper-adaptive">
       {/* Background glowing effects */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-cyan/10 rounded-full blur-[80px] pointer-events-none -z-10" />
 
-      <div className="w-full max-w-2xl relative z-10 flex flex-col items-center">
+      <div className="w-full max-w-2xl relative z-10 flex flex-col items-center px-4">
         
         {/* Header */}
-        <div className="text-center w-full flex flex-col items-center" style={{ marginBottom: '5rem' }}>
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-cyan-100 to-indigo-200" style={{ marginBottom: '2rem' }}>
+        <div className="text-center w-full flex flex-col items-center hero-margin-adaptive">
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-cyan-100 to-indigo-200 mb-6">
             {t.verify.title}
           </h1>
-          <p className="text-[var(--text-secondary)] text-xl max-w-xl mx-auto leading-relaxed">
+          <p className="text-[var(--text-secondary)] text-lg md:text-xl max-w-xl mx-auto leading-relaxed">
             {t.verify.subtitle}
           </p>
         </div>
 
         {/* Main Card */}
-        <div className="bg-[var(--bg-card)]/80 backdrop-blur-3xl rounded-[40px] border border-white/10 shadow-2xl w-full flex flex-col items-center" style={{ padding: '4.5rem' }}>
+        <div className="bg-[var(--bg-card)]/80 backdrop-blur-3xl rounded-[24px] md:rounded-[40px] border border-white/10 shadow-2xl w-full flex flex-col items-center card-padding-adaptive">
           
           {/* Toggle Switch */}
           {status === "idle" && (
-            <div className="flex w-full bg-[var(--bg-primary)] border border-white/5 rounded-[24px] shadow-inner p-2" style={{ marginBottom: '3.5rem' }}>
+            <div className="flex w-full bg-[var(--bg-primary)] border border-white/5 rounded-[16px] sm:rounded-[24px] shadow-inner p-1 sm:p-2 mb-6 sm:mb-10">
               <button 
-                className={`flex-1 py-4 text-center rounded-[18px] transition-all font-bold text-lg ${mode === "file" ? "bg-gradient-to-r from-indigo-500 to-cyan-500 text-white shadow-[0_4px_20px_rgba(0,240,255,0.25)]" : "text-[var(--text-secondary)] hover:text-white hover:bg-white/5"}`}
+                className={`flex-1 py-3 sm:py-4 text-center rounded-[12px] sm:rounded-[18px] transition-all font-bold text-sm sm:text-lg ${mode === "file" ? "bg-gradient-to-r from-indigo-500 to-cyan-500 text-white shadow-[0_4px_20px_rgba(0,240,255,0.25)]" : "text-[var(--text-secondary)] hover:text-white hover:bg-white/5"}`}
                 onClick={() => setMode("file")}
               >
                 {locale === "uk" ? "По файлу" : "By File"}
               </button>
               <button 
-                className={`flex-1 py-4 text-center rounded-[18px] transition-all font-bold text-lg ${mode === "hash" ? "bg-gradient-to-r from-indigo-500 to-cyan-500 text-white shadow-[0_4px_20px_rgba(0,240,255,0.25)]" : "text-[var(--text-secondary)] hover:text-white hover:bg-white/5"}`}
+                className={`flex-1 py-3 sm:py-4 text-center rounded-[12px] sm:rounded-[18px] transition-all font-bold text-sm sm:text-lg ${mode === "hash" ? "bg-gradient-to-r from-indigo-500 to-cyan-500 text-white shadow-[0_4px_20px_rgba(0,240,255,0.25)]" : "text-[var(--text-secondary)] hover:text-white hover:bg-white/5"}`}
                 onClick={() => setMode("hash")}
               >
                 {locale === "uk" ? "По хешу (Advanced)" : "By Hash (Advanced)"}
@@ -170,8 +171,7 @@ export default function VerifyPage() {
           {/* IDLE - File Mode */}
           {status === "idle" && mode === "file" && (
             <div 
-              className="relative overflow-hidden group w-full border-2 border-dashed border-white/20 rounded-[32px] flex flex-col items-center justify-center text-center transition-all duration-500 cursor-pointer hover:border-cyan hover:bg-cyan/5 hover:shadow-[0_0_50px_rgba(0,240,255,0.15)] mx-auto"
-              style={{ padding: '6rem 3rem' }}
+              className="relative overflow-hidden group w-full border-2 border-dashed border-white/20 rounded-[20px] md:rounded-[32px] flex flex-col items-center justify-center text-center transition-all duration-500 cursor-pointer hover:border-cyan hover:bg-cyan/5 hover:shadow-[0_0_50px_rgba(0,240,255,0.15)] mx-auto dropzone-padding-adaptive"
               onDragOver={(e) => e.preventDefault()}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
@@ -200,28 +200,26 @@ export default function VerifyPage() {
 
           {/* IDLE - Hash Mode */}
           {status === "idle" && mode === "hash" && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', width: '100%', alignItems: 'center' }}>
+            <div className="flex flex-col gap-6 w-full items-center">
               <div className="w-full text-left flex flex-col items-center">
-                <label className="block text-sm font-bold tracking-wide uppercase text-[var(--text-secondary)] text-center" style={{ marginBottom: '1.5rem' }}>
+                <label className="block text-sm font-bold tracking-wide uppercase text-[var(--text-secondary)] text-center mb-4">
                   {locale === "uk" ? "Введіть SHA-256 хеш документа (з префіксом 0x)" : "Enter SHA-256 document hash (with 0x prefix)"}
                 </label>
                 <div className="relative w-full">
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-6 pointer-events-none">
-                    <span className="text-[var(--text-secondary)] font-mono text-xl">#</span>
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-4 sm:pl-6 pointer-events-none">
+                    <span className="text-[var(--text-secondary)] font-mono text-lg sm:text-xl">#</span>
                   </div>
                   <input 
                     type="text" 
                     value={inputHash}
                     onChange={(e) => setInputHash(e.target.value)}
                     placeholder="0x..."
-                    className="w-full bg-[var(--bg-primary)] border border-white/10 rounded-[24px] font-mono text-lg focus:outline-none focus:border-cyan focus:ring-1 focus:ring-cyan transition-all placeholder:text-white/20 shadow-inner text-center"
-                    style={{ padding: '1.5rem 3rem' }}
+                    className="w-full bg-[var(--bg-primary)] border border-white/10 rounded-[16px] sm:rounded-[24px] font-mono text-sm sm:text-lg focus:outline-none focus:border-cyan focus:ring-1 focus:ring-cyan transition-all placeholder:text-white/20 shadow-inner text-center p-4 sm:p-6 pl-10 sm:pl-12"
                   />
                 </div>
               </div>
               <button 
-                className="w-full rounded-[24px] font-bold text-white bg-gradient-to-r from-indigo-600 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 shadow-[0_10px_30px_rgba(0,240,255,0.3)] hover:shadow-[0_15px_40px_rgba(0,240,255,0.5)] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:pointer-events-none text-lg"
-                style={{ padding: '1.5rem 2rem' }}
+                className="w-full rounded-[16px] sm:rounded-[24px] font-bold text-white bg-gradient-to-r from-indigo-600 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 shadow-[0_10px_30px_rgba(0,240,255,0.3)] hover:shadow-[0_15px_40px_rgba(0,240,255,0.5)] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:pointer-events-none text-base sm:text-lg p-4 sm:p-6"
                 onClick={verifyByHash}
                 disabled={!inputHash}
               >
@@ -235,7 +233,7 @@ export default function VerifyPage() {
 
           {/* HASHING */}
           {status === "hashing" && (
-            <div className="text-center flex flex-col items-center justify-center w-full" style={{ paddingTop: '6rem', paddingBottom: '6rem' }}>
+            <div className="text-center flex flex-col items-center justify-center w-full py-12 md:py-24">
               <div className="relative w-24 h-24 mx-auto mb-8">
                 <div className="absolute inset-0 border-t-4 border-cyan rounded-full animate-spin"></div>
                 <div className="absolute inset-2 border-r-4 border-indigo-500 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
@@ -248,7 +246,7 @@ export default function VerifyPage() {
 
           {/* CHECKING */}
           {status === "checking" && (
-            <div className="text-center flex flex-col items-center justify-center w-full" style={{ paddingTop: '6rem', paddingBottom: '6rem' }}>
+            <div className="text-center flex flex-col items-center justify-center w-full py-12 md:py-24">
               <div className="flex space-x-4 justify-center mx-auto" style={{ marginBottom: '2.5rem' }}>
                 <div className="w-5 h-5 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
                 <div className="w-5 h-5 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
@@ -266,7 +264,7 @@ export default function VerifyPage() {
               {/* FOUND STATE */}
               {status === "found" && (
                 <>
-                  <div className="bg-gradient-to-r from-[var(--success)]/20 to-transparent w-full rounded-[32px] border border-[var(--success)]/30 flex flex-col md:flex-row items-center justify-center shadow-inner text-center md:text-left relative overflow-hidden" style={{ padding: '2.5rem 2rem' }}>
+                  <div className="bg-gradient-to-r from-[var(--success)]/20 to-transparent w-full rounded-[24px] md:rounded-[32px] border border-[var(--success)]/30 flex flex-col md:flex-row items-center justify-center shadow-inner text-center md:text-left relative overflow-hidden box-padding-adaptive">
                     <div className="absolute left-0 top-0 w-48 h-48 bg-[var(--success)]/20 blur-[40px] rounded-full -translate-y-1/2 -translate-x-1/2"></div>
                     <div className="flex flex-col md:flex-row items-center justify-center gap-6 relative z-10 w-full">
                       <div className="w-16 h-16 rounded-2xl bg-[var(--success)]/20 border border-[var(--success)]/40 flex items-center justify-center text-3xl text-[var(--success)] mx-auto md:mx-0 shrink-0">
@@ -274,49 +272,49 @@ export default function VerifyPage() {
                       </div>
                       <div className="flex flex-col items-center md:items-start w-full">
                         <div className="text-xs font-bold tracking-[0.2em] uppercase text-[var(--success)] mb-2">{t.verify.found}</div>
-                        <div className="font-bold text-2xl text-white text-center md:text-left">{locale === "uk" ? "Документ є автентичним" : "Document is authentic"}</div>
+                        <div className="font-bold text-xl sm:text-2xl text-white text-center md:text-left">{locale === "uk" ? "Документ є автентичним" : "Document is authentic"}</div>
                       </div>
                     </div>
                   </div>
 
                   {(filename || file?.name) && (
-                    <div className="bg-[var(--bg-primary)] w-full rounded-3xl border border-white/5 flex flex-col items-center justify-center shadow-inner group text-center relative overflow-hidden" style={{ padding: '2.5rem 2rem' }}>
+                    <div className="bg-[var(--bg-primary)] w-full rounded-3xl border border-white/5 flex flex-col items-center justify-center shadow-inner group text-center relative overflow-hidden box-padding-adaptive">
                       <div className="absolute inset-0 bg-gradient-to-r from-[var(--success)]/0 via-[var(--success)]/5 to-[var(--success)]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
                       <div className="text-xs text-[var(--text-secondary)] font-bold tracking-[0.2em] uppercase mb-2">Назва документа</div>
-                      <div className="font-bold text-2xl text-white truncate max-w-[250px] md:max-w-md w-full relative z-10">{filename || file?.name}</div>
+                      <div className="font-bold text-xl sm:text-2xl text-white truncate max-w-[250px] md:max-w-md w-full relative z-10">{filename || file?.name}</div>
                     </div>
                   )}
 
-                  <div className="flex flex-col md:flex-row w-full" style={{ gap: '2rem' }}>
-                    <div className="bg-[var(--bg-primary)] w-full rounded-3xl border border-white/5 flex flex-col items-center justify-center shadow-inner group text-center" style={{ padding: '2.5rem 2rem' }}>
+                  <div className="flex flex-col sm:flex-row w-full gap-4 sm:gap-6">
+                    <div className="bg-[var(--bg-primary)] w-full rounded-3xl border border-white/5 flex flex-col items-center justify-center shadow-inner group text-center box-padding-adaptive">
                       <div className="flex items-center justify-center gap-2 mb-2 w-full">
                         <span className="text-xs text-[var(--text-secondary)] font-bold tracking-[0.2em] uppercase">{t.verify.date}</span>
                         <button onClick={() => handleCopy(formatDate(result!.timestamp), 'date')} className="text-[var(--text-secondary)] hover:text-white transition-colors p-1" title={locale === "uk" ? "Копіювати" : "Copy"}>
                           {copiedField === 'date' ? <CheckIcon /> : <CopyIcon />}
                         </button>
                       </div>
-                      <div className="font-bold text-2xl text-white w-full">{formatDate(result!.timestamp)}</div>
+                      <div className="font-bold text-lg sm:text-2xl text-white w-full">{formatDate(result!.timestamp)}</div>
                     </div>
 
-                    <div className="bg-[var(--bg-primary)] w-full rounded-3xl border border-white/5 flex flex-col items-center justify-center shadow-inner group text-center" style={{ padding: '2.5rem 2rem' }}>
+                    <div className="bg-[var(--bg-primary)] w-full rounded-3xl border border-white/5 flex flex-col items-center justify-center shadow-inner group text-center box-padding-adaptive">
                       <div className="flex items-center justify-center gap-2 mb-2 w-full">
                         <span className="text-xs text-[var(--text-secondary)] font-bold tracking-[0.2em] uppercase">{t.verify.author}</span>
                         <button onClick={() => handleCopy(result!.author, 'author')} className="text-[var(--text-secondary)] hover:text-white transition-colors p-1" title={locale === "uk" ? "Копіювати" : "Copy"}>
                           {copiedField === 'author' ? <CheckIcon /> : <CopyIcon />}
                         </button>
                       </div>
-                      <div className="font-mono text-xl text-cyan truncate max-w-[200px] md:max-w-[250px] w-full" title={result!.author}>{result!.author}</div>
+                      <div className="font-mono text-sm sm:text-xl text-cyan truncate max-w-[200px] md:max-w-[250px] w-full" title={result!.author}>{result!.author}</div>
                     </div>
                   </div>
 
-                  <div className="bg-[var(--bg-primary)] w-full rounded-3xl border border-white/5 flex flex-col items-center justify-center shadow-inner group text-center" style={{ padding: '2.5rem 2rem' }}>
+                  <div className="bg-[var(--bg-primary)] w-full rounded-3xl border border-white/5 flex flex-col items-center justify-center shadow-inner group text-center box-padding-adaptive">
                     <div className="flex items-center justify-center gap-2 mb-2 w-full">
                       <span className="text-xs text-[var(--text-secondary)] font-bold tracking-[0.2em] uppercase">{t.common.sha256}</span>
                       <button onClick={() => handleCopy(hash, 'hash')} className="text-[var(--text-secondary)] hover:text-white transition-colors p-1" title={locale === "uk" ? "Копіювати" : "Copy"}>
                         {copiedField === 'hash' ? <CheckIcon /> : <CopyIcon />}
                       </button>
                     </div>
-                    <div className="font-mono text-lg text-indigo-200/70 break-all leading-relaxed w-full px-2">{hash}</div>
+                    <div className="font-mono text-xs sm:text-lg text-indigo-200/70 break-all leading-relaxed w-full px-2">{hash}</div>
                   </div>
                 </>
               )}
@@ -324,7 +322,7 @@ export default function VerifyPage() {
               {/* REVOKED STATE */}
               {status === "revoked" && (
                 <>
-                  <div className="bg-gradient-to-r from-[var(--warning)]/20 to-transparent w-full rounded-[32px] border border-[var(--warning)]/30 flex flex-col md:flex-row items-center justify-center shadow-inner text-center md:text-left relative overflow-hidden" style={{ padding: '2.5rem 2rem' }}>
+                  <div className="bg-gradient-to-r from-[var(--warning)]/20 to-transparent w-full rounded-[24px] md:rounded-[32px] border border-[var(--warning)]/30 flex flex-col md:flex-row items-center justify-center shadow-inner text-center md:text-left relative overflow-hidden box-padding-adaptive">
                     <div className="absolute left-0 top-0 w-48 h-48 bg-[var(--warning)]/20 blur-[40px] rounded-full -translate-y-1/2 -translate-x-1/2"></div>
                     <div className="flex flex-col md:flex-row items-center justify-center gap-6 relative z-10 w-full">
                       <div className="w-16 h-16 rounded-2xl bg-[var(--warning)]/20 border border-[var(--warning)]/40 flex items-center justify-center text-3xl text-[var(--warning)] mx-auto md:mx-0 shrink-0">
@@ -332,73 +330,75 @@ export default function VerifyPage() {
                       </div>
                       <div className="flex flex-col items-center md:items-start w-full">
                         <div className="text-xs font-bold tracking-[0.2em] uppercase text-[var(--warning)] mb-2">{t.verify.revoked}</div>
-                        <div className="font-bold text-2xl text-white text-center md:text-left">{locale === "uk" ? "Документ відкликано" : "Document revoked"}</div>
+                        <div className="font-bold text-xl sm:text-2xl text-white text-center md:text-left">{locale === "uk" ? "Документ відкликано" : "Document revoked"}</div>
                       </div>
                     </div>
                   </div>
 
                   {(filename || file?.name) && (
-                    <div className="bg-[var(--bg-primary)] w-full rounded-3xl border border-white/5 flex flex-col items-center justify-center shadow-inner text-center" style={{ padding: '2.5rem 2rem' }}>
+                    <div className="bg-[var(--bg-primary)] w-full rounded-3xl border border-white/5 flex flex-col items-center justify-center shadow-inner text-center box-padding-adaptive">
                       <div className="text-xs text-[var(--text-secondary)] font-bold tracking-[0.2em] uppercase mb-2">Назва документа</div>
-                      <div className="font-bold text-2xl text-white truncate max-w-[250px] md:max-w-md w-full">{filename || file?.name}</div>
+                      <div className="font-bold text-xl sm:text-2xl text-white truncate max-w-[250px] md:max-w-md w-full">{filename || file?.name}</div>
                     </div>
                   )}
 
-                  <div className="flex flex-col md:flex-row w-full" style={{ gap: '2rem' }}>
-                    <div className="bg-[var(--bg-primary)] w-full rounded-3xl border border-white/5 flex flex-col items-center justify-center shadow-inner text-center" style={{ padding: '2.5rem 2rem' }}>
+                  <div className="flex flex-col sm:flex-row w-full gap-4 sm:gap-6">
+                    <div className="bg-[var(--bg-primary)] w-full rounded-3xl border border-white/5 flex flex-col items-center justify-center shadow-inner text-center box-padding-adaptive">
                       <div className="flex items-center justify-center gap-2 mb-2 w-full">
                         <span className="text-xs text-[var(--text-secondary)] font-bold tracking-[0.2em] uppercase">{t.verify.date}</span>
                         <button onClick={() => handleCopy(formatDate(result!.timestamp), 'dateRev')} className="text-[var(--text-secondary)] hover:text-white transition-colors p-1">
                           {copiedField === 'dateRev' ? <CheckIcon /> : <CopyIcon />}
                         </button>
                       </div>
-                      <div className="font-bold text-2xl text-white w-full">{formatDate(result!.timestamp)}</div>
+                      <div className="font-bold text-lg sm:text-2xl text-white w-full">{formatDate(result!.timestamp)}</div>
                     </div>
 
-                    <div className="bg-[var(--bg-primary)] w-full rounded-3xl border border-white/5 flex flex-col items-center justify-center shadow-inner text-center" style={{ padding: '2.5rem 2rem' }}>
+                    <div className="bg-[var(--bg-primary)] w-full rounded-3xl border border-white/5 flex flex-col items-center justify-center shadow-inner text-center box-padding-adaptive">
                       <div className="flex items-center justify-center gap-2 mb-2 w-full">
                         <span className="text-xs text-[var(--text-secondary)] font-bold tracking-[0.2em] uppercase">{t.verify.author}</span>
                         <button onClick={() => handleCopy(result!.author, 'authorRev')} className="text-[var(--text-secondary)] hover:text-white transition-colors p-1">
                           {copiedField === 'authorRev' ? <CheckIcon /> : <CopyIcon />}
                         </button>
                       </div>
-                      <div className="font-mono text-xl text-[var(--warning)] truncate max-w-[200px] md:max-w-[250px] w-full" title={result!.author}>{result!.author}</div>
+                      <div className="font-mono text-sm sm:text-xl text-[var(--warning)] truncate max-w-[200px] md:max-w-[250px] w-full" title={result!.author}>{result!.author}</div>
                     </div>
                   </div>
 
-                  <div className="bg-[var(--bg-primary)] w-full rounded-3xl border border-white/5 flex flex-col items-center justify-center shadow-inner text-center" style={{ padding: '2.5rem 2rem' }}>
+                  <div className="bg-[var(--bg-primary)] w-full rounded-3xl border border-white/5 flex flex-col items-center justify-center shadow-inner text-center box-padding-adaptive">
                     <div className="flex items-center justify-center gap-2 mb-2 w-full">
                       <span className="text-xs text-[var(--text-secondary)] font-bold tracking-[0.2em] uppercase">{t.common.sha256}</span>
                       <button onClick={() => handleCopy(hash, 'hashRev')} className="text-[var(--text-secondary)] hover:text-white transition-colors p-1">
                         {copiedField === 'hashRev' ? <CheckIcon /> : <CopyIcon />}
                       </button>
                     </div>
-                    <div className="font-mono text-lg text-indigo-200/70 break-all leading-relaxed w-full px-2">{hash}</div>
+                    <div className="font-mono text-xs sm:text-lg text-indigo-200/70 break-all leading-relaxed w-full px-2">{hash}</div>
                   </div>
                 </>
               )}
 
               {/* NOT FOUND */}
               {status === "not_found" && (
-                <div className="bg-[var(--bg-primary)] w-full rounded-3xl border border-[var(--error)]/30 flex flex-col items-center justify-center shadow-inner text-center relative overflow-hidden" style={{ padding: '4rem 2rem' }}>
+                <div className="bg-[var(--bg-primary)] w-full rounded-3xl border border-[var(--error)]/30 flex flex-col items-center justify-center shadow-inner text-center relative overflow-hidden card-padding-adaptive">
                   <div className="absolute left-1/2 top-1/2 w-48 h-48 bg-[var(--error)]/10 blur-[40px] rounded-full -translate-y-1/2 -translate-x-1/2"></div>
                   <div className="text-6xl mb-6 relative z-10">❌</div>
                   <h3 className="text-3xl font-extrabold text-white mb-4 relative z-10">{t.verify.not_found}</h3>
-                  <p className="text-[var(--text-secondary)] text-xl max-w-md mx-auto relative z-10 leading-relaxed">{t.verify.not_found_hint}</p>
+                  <p className="text-[var(--text-secondary)] text-lg md:text-xl max-w-md mx-auto relative z-10 leading-relaxed">{t.verify.not_found_hint}</p>
                 </div>
               )}
 
               {/* ERROR */}
               {status === "error" && (
-                <div className="bg-[var(--bg-primary)] w-full rounded-3xl border border-[var(--error)]/30 flex flex-col items-center justify-center shadow-inner text-center relative overflow-hidden" style={{ padding: '4rem 2rem' }}>
+                <div className="bg-[var(--bg-primary)] w-full rounded-3xl border border-[var(--error)]/30 flex flex-col items-center justify-center shadow-inner text-center relative overflow-hidden card-padding-adaptive">
                   <div className="text-6xl mb-6 relative z-10 animate-[pulse_1.5s_ease-in-out_infinite]">⚠️</div>
-                  <h3 className="text-3xl font-extrabold text-white mb-4 relative z-10">{locale === "uk" ? "Помилка перевірки" : "Verification Error"}</h3>
-                  <p className="text-[var(--text-secondary)] text-xl max-w-md mx-auto relative z-10 leading-relaxed">{locale === "uk" ? "Перевірте формат хешу або підключення до мережі." : "Check hash format or network connection."}</p>
+                  <h3 className="text-3xl font-extrabold text-white mb-4 relative z-10">{locale === "uk" ? "Помилка" : "Error"}</h3>
+                  <p className="text-[var(--text-secondary)] text-lg md:text-xl max-w-md mx-auto relative z-10 leading-relaxed">
+                    {errorMessage || (locale === "uk" ? "Перевірте формат хешу або підключення до мережі." : "Check hash format or network connection.")}
+                  </p>
                 </div>
               )}
 
               {/* Back Button */}
-              <div className="flex justify-center w-full" style={{ paddingTop: '1.5rem' }}>
+              <div className="flex justify-center w-full pt-6">
                 <button 
                   className="px-12 py-5 rounded-2xl font-bold text-white/70 bg-white/5 border border-white/10 hover:bg-white/10 hover:text-white transition-all text-lg" 
                   onClick={() => {
@@ -406,6 +406,7 @@ export default function VerifyPage() {
                     setHash("");
                     setInputHash("");
                     setFile(null);
+                    setErrorMessage("");
                   }}
                 >
                   {t.common.back}

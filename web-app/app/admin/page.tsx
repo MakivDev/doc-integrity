@@ -107,7 +107,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto py-8">
+    <div className="max-w-4xl mx-auto py-8 px-4">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">{t.admin.title}</h1>
         <p className="text-[var(--text-secondary)]">{t.admin.subtitle}</p>
@@ -131,20 +131,19 @@ export default function AdminPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div className="glass-card">
           <h3 className="text-xl font-bold mb-4">{t.admin.withdraw}</h3>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <input 
               type="number" 
               step="0.001"
               value={withdrawAmount}
               onChange={(e) => setWithdrawAmount(e.target.value)}
               placeholder="0.00"
-              className="flex-1 bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-lg px-4 text-white focus:border-cyan outline-none"
+              className="flex-1 bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-white focus:border-cyan outline-none w-full"
             />
             <button 
-              className="btn btn-primary"
+              className="btn btn-primary w-full sm:w-auto sm:min-w-[160px] justify-center"
               onClick={handleWithdraw}
               disabled={processing || !withdrawAmount}
-              style={{ minWidth: '160px', justifyContent: 'center' }}
             >
               {t.admin.withdraw}
             </button>
@@ -153,18 +152,18 @@ export default function AdminPage() {
 
         <div className="glass-card">
           <h3 className="text-xl font-bold mb-4">{t.admin.fee_update}</h3>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <input 
               type="number" 
               step="0.0001"
               value={newFee}
               onChange={(e) => setNewFee(e.target.value)}
               placeholder="0.001"
-              className="flex-1 bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-lg px-4 text-white focus:border-magenta outline-none"
+              className="flex-1 bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-white focus:border-magenta outline-none w-full"
             />
             <button 
-              className="btn"
-              style={{ border: '1px solid var(--accent-magenta)', minWidth: '160px', justifyContent: 'center' }}
+              className="btn w-full sm:w-auto sm:min-w-[160px] justify-center"
+              style={{ border: '1px solid var(--accent-magenta)' }}
               onClick={handleSetFee}
               disabled={processing || !newFee}
             >
@@ -177,17 +176,17 @@ export default function AdminPage() {
       {isSuperAdmin && (
         <div className="glass-card border-[var(--accent-indigo)]">
           <h3 className="text-xl font-bold mb-4">{t.admin.admins_title}</h3>
-          <div className="flex gap-2 mb-4">
+          <div className="flex flex-col sm:flex-row gap-2 mb-4">
             <input 
               type="text" 
               value={newAdmin}
               onChange={(e) => setNewAdmin(e.target.value)}
               placeholder="0x..."
-              className="flex-1 bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-lg px-4 text-white focus:border-indigo-500 outline-none"
+              className="flex-1 bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-white focus:border-indigo-500 outline-none w-full"
             />
             <button 
-              className="btn"
-              style={{ border: '1px solid var(--accent-indigo)', minWidth: '160px', justifyContent: 'center' }}
+              className="btn w-full sm:w-auto sm:min-w-[160px] justify-center"
+              style={{ border: '1px solid var(--accent-indigo)' }}
               onClick={handleAddAdmin}
               disabled={processing || !newAdmin}
             >

@@ -96,8 +96,8 @@ export default function RegisterPage() {
 
   if (!account || !isCorrectNetwork) {
     return (
-      <div className="flex flex-col items-center justify-center w-full text-center" style={{ minHeight: '80vh', paddingTop: '5rem' }}>
-        <div className="glass-card flex flex-col items-center justify-center mx-auto" style={{ padding: '5rem 4rem', maxWidth: '32rem' }}>
+      <div className="flex flex-col items-center justify-center w-full text-center min-h-[80vh] pt-12">
+        <div className="glass-card flex flex-col items-center justify-center mx-auto card-padding-adaptive max-w-lg w-full">
           <div className="text-5xl mb-6">🔒</div>
           <h2 className="text-2xl font-bold mb-4">{t.register.connect_warning}</h2>
           <p className="text-[var(--text-secondary)]">{t.wallet.noMetamask}</p>
@@ -107,26 +107,25 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex flex-col justify-center w-full items-center relative text-center" style={{ minHeight: '80vh', paddingTop: '8rem', paddingBottom: '6rem' }}>
+    <div className="flex flex-col justify-center w-full items-center relative text-center page-wrapper-adaptive">
       {/* Background glowing effects */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-cyan/5 rounded-full blur-[120px] pointer-events-none -z-10" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-500/10 rounded-full blur-[80px] pointer-events-none -z-10" />
 
-      <div className="w-full max-w-2xl relative z-10 flex flex-col items-center">
-        <div className="text-center w-full flex flex-col items-center" style={{ marginBottom: '5rem' }}>
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-cyan-100 to-indigo-200" style={{ marginBottom: '2rem' }}>
+      <div className="w-full max-w-2xl relative z-10 flex flex-col items-center px-4">
+        <div className="text-center w-full flex flex-col items-center hero-margin-adaptive">
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-cyan-100 to-indigo-200 mb-6">
             {t.register.title}
           </h1>
-          <p className="text-[var(--text-secondary)] text-xl max-w-xl mx-auto leading-relaxed">
+          <p className="text-[var(--text-secondary)] text-lg md:text-xl max-w-xl mx-auto leading-relaxed">
             {t.register.subtitle}
           </p>
         </div>
 
-        <div className="bg-[var(--bg-card)]/80 backdrop-blur-3xl rounded-[40px] border border-white/10 shadow-2xl w-full flex flex-col items-center" style={{ padding: '4.5rem' }}>
+        <div className="bg-[var(--bg-card)]/80 backdrop-blur-3xl rounded-[24px] md:rounded-[40px] border border-white/10 shadow-2xl w-full flex flex-col items-center card-padding-adaptive">
           {status === "idle" && (
             <div 
-              className="relative overflow-hidden group w-full border-2 border-dashed border-white/20 rounded-[32px] flex flex-col items-center justify-center text-center transition-all duration-500 cursor-pointer hover:border-cyan hover:bg-cyan/5 hover:shadow-[0_0_50px_rgba(0,240,255,0.15)] mx-auto"
-              style={{ padding: '6rem 3rem' }}
+              className="relative overflow-hidden group w-full border-2 border-dashed border-white/20 rounded-[20px] md:rounded-[32px] flex flex-col items-center justify-center text-center transition-all duration-500 cursor-pointer hover:border-cyan hover:bg-cyan/5 hover:shadow-[0_0_50px_rgba(0,240,255,0.15)] mx-auto dropzone-padding-adaptive"
               onDragOver={(e) => e.preventDefault()}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
@@ -159,7 +158,7 @@ export default function RegisterPage() {
           )}
 
           {status === "hashing" && (
-            <div className="text-center flex flex-col items-center justify-center w-full" style={{ paddingTop: '6rem', paddingBottom: '6rem' }}>
+            <div className="text-center flex flex-col items-center justify-center w-full py-12 md:py-24">
               <div className="relative w-24 h-24 mx-auto mb-8">
                 <div className="absolute inset-0 border-t-4 border-cyan rounded-full animate-spin"></div>
                 <div className="absolute inset-2 border-r-4 border-indigo-500 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
@@ -169,10 +168,27 @@ export default function RegisterPage() {
               <p className="text-[var(--text-secondary)] text-center">Виконується локальне хешування SHA-256...</p>
             </div>
           )}
-
-          {(status === "ready" || status === "pending" || status === "error") && (
+          {status === "error" && !file && (
+            <div className="bg-[var(--bg-primary)] w-full rounded-3xl border border-[var(--error)]/30 flex flex-col items-center justify-center shadow-inner text-center relative overflow-hidden card-padding-adaptive">
+              <div className="text-6xl mb-6 relative z-10 animate-[pulse_1.5s_ease-in-out_infinite]">⚠️</div>
+              <h3 className="text-3xl font-extrabold text-white mb-4 relative z-10">{locale === "uk" ? "Помилка формату" : "Format Error"}</h3>
+              <p className="text-[var(--text-secondary)] text-xl max-w-md mx-auto relative z-10 leading-relaxed">{errorMessage}</p>
+              <div className="flex justify-center w-full pt-8">
+                <button 
+                  className="px-12 py-5 rounded-2xl font-bold text-white/70 bg-white/5 border border-white/10 hover:bg-white/10 hover:text-white transition-all text-lg" 
+                  onClick={() => {
+                    setStatus("idle");
+                    setErrorMessage("");
+                  }}
+                >
+                  {t.common.back}
+                </button>
+              </div>
+            </div>
+          )}
+          {(status === "ready" || status === "pending" || (status === "error" && file)) && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', width: '100%', alignItems: 'center' }}>
-              <div className="bg-[var(--bg-primary)] w-full rounded-3xl border border-white/5 flex flex-col md:flex-row items-center justify-center shadow-inner group text-center md:text-left" style={{ padding: '2.5rem 2rem' }}>
+              <div className="bg-[var(--bg-primary)] w-full rounded-3xl border border-white/5 flex flex-col md:flex-row items-center justify-center shadow-inner group text-center md:text-left box-padding-adaptive">
                 <div className="flex flex-col md:flex-row items-center justify-center gap-6">
                   <div className="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-3xl text-indigo-400 group-hover:scale-105 transition-transform mx-auto md:mx-0">
                     📄
@@ -186,7 +202,7 @@ export default function RegisterPage() {
               </div>
 
               {fee !== null && (
-                <div className="bg-gradient-to-r from-magenta/10 to-transparent w-full rounded-3xl border border-magenta/20 flex flex-col md:flex-row items-center justify-center relative overflow-hidden text-center md:text-left" style={{ padding: '2.5rem 2rem' }}>
+                <div className="bg-gradient-to-r from-magenta/10 to-transparent w-full rounded-3xl border border-magenta/20 flex flex-col md:flex-row items-center justify-center relative overflow-hidden text-center md:text-left box-padding-adaptive">
                   <div className="absolute right-0 top-0 w-48 h-48 bg-magenta/10 blur-[40px] rounded-full -translate-y-1/2 translate-x-1/2"></div>
                   <div className="flex flex-col md:flex-row items-center justify-center gap-6 relative z-10">
                     <div className="w-14 h-14 rounded-2xl bg-magenta/20 flex items-center justify-center text-2xl border border-magenta/30 mx-auto md:mx-0">
@@ -210,7 +226,7 @@ export default function RegisterPage() {
                 </div>
               )}
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center w-full" style={{ paddingTop: '2.5rem' }}>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center w-full pt-8">
                 <button 
                   className="px-10 py-5 rounded-2xl font-bold text-white/70 bg-white/5 border border-white/10 hover:bg-white/10 hover:text-white transition-all disabled:opacity-50"
                   onClick={() => {
@@ -246,7 +262,7 @@ export default function RegisterPage() {
           )}
 
           {status === "success" && (
-            <div className="text-center relative flex flex-col items-center justify-center w-full" style={{ paddingTop: '4rem', paddingBottom: '4rem' }}>
+            <div className="text-center relative flex flex-col items-center justify-center w-full py-8 md:py-16">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-[var(--success)]/20 rounded-full blur-[40px] pointer-events-none" />
               
               <div className="w-24 h-24 mx-auto bg-gradient-to-br from-[var(--success)] to-emerald-700 rounded-full flex items-center justify-center text-white text-5xl shadow-[0_0_30px_rgba(16,185,129,0.4)] mb-8 animate-[bounce_1s_ease-in-out_1]">

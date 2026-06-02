@@ -136,13 +136,13 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto py-8">
-      <div className="flex justify-between items-end mb-8">
+    <div className="max-w-4xl mx-auto py-8 px-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold mb-2">{t.dashboard.title}</h1>
           <p className="text-[var(--text-secondary)]">{t.dashboard.subtitle}</p>
         </div>
-        <div className="text-right">
+        <div className="text-left sm:text-right">
           <div className="text-sm text-[var(--text-secondary)]">{t.dashboard.total}</div>
           <div className="text-2xl font-bold text-cyan">{documents.length}</div>
         </div>
@@ -177,8 +177,8 @@ export default function DashboardPage() {
                     {doc.filename}
                   </div>
                 )}
-                <div className="flex items-center gap-2">
-                  <div className="font-mono text-sm text-cyan truncate" title={doc.hash}>
+                <div className="flex items-center gap-2 max-w-full">
+                  <div className="font-mono text-xs sm:text-sm text-cyan break-all flex-1 min-w-0" title={doc.hash}>
                     {doc.hash}
                   </div>
                   <button onClick={() => handleCopy(doc.hash, doc.hash)} className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors shrink-0 p-1">
@@ -187,11 +187,10 @@ export default function DashboardPage() {
                 </div>
               </div>
               
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                 <a 
                   href={`/verify`} 
-                  className="btn"
-                  style={{ minWidth: '130px', justifyContent: 'center' }}
+                  className="btn w-full md:w-auto md:min-w-[130px] justify-center"
                 >
                   {t.nav.verify}
                 </a>
@@ -199,8 +198,8 @@ export default function DashboardPage() {
                   <button 
                     onClick={() => handleRevoke(doc.hash)}
                     disabled={revoking === doc.hash}
-                    className="btn"
-                    style={{ borderColor: 'var(--warning)', color: 'var(--warning)', minWidth: '130px', justifyContent: 'center' }}
+                    className="btn w-full md:w-auto md:min-w-[130px] justify-center"
+                    style={{ borderColor: 'var(--warning)', color: 'var(--warning)' }}
                   >
                     {revoking === doc.hash ? t.dashboard.revoking : t.dashboard.revoke}
                   </button>
